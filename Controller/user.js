@@ -13,10 +13,9 @@ exports.User=(req,res,next)=>{
         console.log(err);
       }
 
-      const user =  User.findOne({where : { email }});
-
-      if(user.email===email){
-        res.status(501).json({message:"Email Already Exist!!!"});
+      const user =  await User.findOne({where : { email:email }});
+      if(user){
+        res.status(501).json({message:"User Already Exist Please Login!!!"});
       }else{
         await User.create({
           name:name,
@@ -30,10 +29,8 @@ exports.User=(req,res,next)=>{
           res.status(504).json({message:"Something went Wrong"});
         })
       }
-      
-     
 
-    })
+   })
     
 
 }

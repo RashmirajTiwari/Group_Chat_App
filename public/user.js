@@ -22,7 +22,7 @@ var submit = document.getElementById("submitBtn");
                 await axios.post("http://localhost:3000/user/SignUp",SignUp).then(res=>{
                     
                 if(res.status===200){
-                    
+                    alert("SignUp Successfully");
                     //window.location.href="../views/login.html"
                     //message.innerHTML=`<h5 style="text-align: center;color:green">${res.data.message}</h5>`
                 }
