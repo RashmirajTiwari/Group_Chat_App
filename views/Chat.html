@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Chat App
+    </title>
+    <link rel="stylesheet" href="../public/style.css">
+    <style>
+      
+      #footer {
+        width: 100%;
+        background-color: rgb(83, 183, 236);
+         position: absolute;
+         bottom: 0;
+      }
+      ul{
+            list-style-type: none; 
+           
+          }
+       
+    
+          
+
+     </style>
+</head>
+
+<body>
+
+	<h2><center>Chat App</center></h2>
+    <hr>
+            <div id="list" style="text-align: center;">
+                <ul id="MyList"></ul>
+            </div>
+            
+
+
+<form>
+    <div id="footer">
+        <center>
+        <input type="text"  name="chat" id="chat" style="width: 800px;" required><button id="sendBtn" type="button" style="height: 33px;">Send</button>
+        </center>
+    </div>
+</form>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+
+<script>
+    var send=document.getElementById("sendBtn");
+    var list=document.getElementById("MyList");
+    send.addEventListener("click", () =>{
+        var chat=document.getElementById("chat");
+        list.innerHTML+=`<center><li style="text-align:left; width: 40%; background-color: rgb(195, 210, 218);padding: 0.5em;";>${chat.value}</li></center>`
+        var liTag = document.getElementsByTagName('li');
+
+        for(i=0;i<liTag.length;i++){
+            if(i%2==0) liTag[i].style.backgroundColor ='#C5D4D6 ';
+                else liTag[i].style.backgroundColor = '#ffffff';
+            }
+        chat.value="";
+        
+    })
+
+</script>
+</body>
+</html>
