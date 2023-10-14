@@ -49,22 +49,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
 
-<script>
-    var send=document.getElementById("sendBtn");
-    var list=document.getElementById("MyList");
-    send.addEventListener("click", () =>{
-        var chat=document.getElementById("chat");
-        list.innerHTML+=`<center><li style="text-align:left; width: 40%; background-color: rgb(195, 210, 218);padding: 0.5em;";>${chat.value}</li></center>`
-        var liTag = document.getElementsByTagName('li');
-
-        for(i=0;i<liTag.length;i++){
-            if(i%2==0) liTag[i].style.backgroundColor ='#C5D4D6 ';
-                else liTag[i].style.backgroundColor = '#ffffff';
-            }
-        chat.value="";
-        
-    })
-
-</script>
+<script src="../public/chatMessge.js"></script>
 </body>
 </html>

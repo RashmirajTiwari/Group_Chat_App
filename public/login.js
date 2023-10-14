@@ -20,7 +20,7 @@ var login = document.getElementById("loginBtn");
                     if(res.status===200){
                         alert(res.data.message);
                         localStorage.setItem('token',res.data.token)
-                        //window.location.href="../views/expense.html"
+                        window.location.href="../views/Chat.html"
                         //message.innerHTML=`<h5 style="text-align: center;color:green">${res.data.message}</h5>`
                     }
         
