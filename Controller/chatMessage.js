@@ -15,7 +15,7 @@ exports.chatMessages=(req,res,next)=>{
       
      
   exports.getAllChatMessages=(req,res,next)=>{
-
+    
       ChatMessges.findAll().then(result=>{
           res.status(200).json({messages:result});
         }).catch(err=>{
