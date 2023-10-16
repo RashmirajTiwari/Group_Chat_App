@@ -1,5 +1,6 @@
 var send=document.getElementById("sendBtn");
 var list=document.getElementById("MyList");
+var chatDataObj=[];
 send.addEventListener("click", async() =>{
     var chat=document.getElementById("chat");
 
@@ -13,8 +14,9 @@ send.addEventListener("click", async() =>{
            }
         const token=localStorage.getItem('token');
             await axios.post("http://localhost:3000/user/ChatMessage",chatMessage,{headers:{"Authorization":token}}).then(res=>{
-            
-            list.innerHTML+=`<center><li style="text-align:left; width: 40%; background-color: rgb(195, 210, 218);padding: 0.5em;";>${res.data.message}</li></center>`
+        
+            console.log(res);
+            list.innerHTML+=`<center><li style="text-align:left; width: 40%; background-color: rgb(195, 210, 218);padding: 0.5em;";>${res.data.message.message}</li></center>`
             var liTag = document.getElementsByTagName('li');
         
             for(i=0;i<liTag.length;i++){
@@ -43,33 +45,57 @@ send.addEventListener("click", async() =>{
 
 window.addEventListener("DOMContentLoaded", async() => {
 
+    
 
     setInterval(async() => {
-        await axios.get("http://localhost:3000/user/getAllChatMessages").
-        then(res=>{
-           
-            console.log(res.data.messages[0].message);
-            list.innerHTML=""
-            for (let i = 0; i < res.data.messages.length; i++) {
-                
-                list.innerHTML+=`<center><li style="text-align:left; width: 40%; background-color: rgb(195, 210, 218);padding: 0.5em;";>${res.data.messages[i].message}</li></center>`
+       
+        var oldChatData = JSON.parse(localStorage.getItem('chatDataObj'));
+        var id;
+        if(oldChatData!=null ){
+            id=oldChatData[oldChatData.length-1].id;
+        }
+        
+        console.log(id);
+        const token=localStorage.getItem('token');
+        await axios.get(`http://localhost:3000/user/getNewMessage?lastMessageId=${id}`,{headers:{"Authorization":token}}).then(res=>{
+        
+       
     
+        for(let i=0;i<res.data.count;i++){
+            const chatData={
+                id:res.data.messages[i].id,
+                message:res.data.messages[i].message
             }
-            var liTag = document.getElementsByTagName('li');
-         
-            for(i=0;i<liTag.length;i++){
-                if(i%2==0) liTag[i].style.backgroundColor ='#C5D4D6 ';
-                    else liTag[i].style.backgroundColor = '#ffffff';
+            if(oldChatData == null || oldChatData.length>=5) oldChatData = [];
+        oldChatData.push(chatData);
+        localStorage.setItem('chatDataObj', JSON.stringify(oldChatData));
+        }
+       
+        
+     })
+            
+            list.innerHTML=""
+            if(oldChatData!=null){
+                for (let i = 0; i < oldChatData.length; i++) {
+                
+                    list.innerHTML+=`<center><li style="text-align:left; width: 40%; background-color: rgb(195, 210, 218);padding: 0.5em;";>${oldChatData[i].message}</li></center>`
+        
                 }
-        }).
-        catch(err=>{
-            console.log(err);
-        })
+                var liTag = document.getElementsByTagName('li');
+             
+                for(i=0;i<liTag.length;i++){
+                    if(i%2==0) liTag[i].style.backgroundColor ='#C5D4D6 ';
+                        else liTag[i].style.backgroundColor = '#ffffff';
+                    }
+            }
+           
+        
                
        
-    }, 2000);
-   
-   
-    
-    
+   }, 2000);
+
+
+
+
+
 })
