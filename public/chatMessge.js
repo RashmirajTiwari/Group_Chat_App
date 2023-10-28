@@ -1,6 +1,5 @@
 var send=document.getElementById("sendBtn");
 var list=document.getElementById("MyList");
-var chatDataObj=[];
 send.addEventListener("click", async() =>{
     var chat=document.getElementById("chat");
 
@@ -47,7 +46,7 @@ window.addEventListener("DOMContentLoaded", async() => {
 
     
 
-    setInterval(async() => {
+   // setInterval(async() => {
        
         var oldChatData = JSON.parse(localStorage.getItem('chatDataObj'));
         var id;
@@ -92,7 +91,7 @@ window.addEventListener("DOMContentLoaded", async() => {
         
                
        
-   }, 2000);
+   //}, 2000);
 
 
 
