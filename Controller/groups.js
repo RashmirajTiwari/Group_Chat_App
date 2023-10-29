@@ -44,3 +44,30 @@ exports.groups=(req,res,next)=>{
         res.status(401).json({message:"Something went Wrong"});
       })}
 }
+
+exports.deleteGroup= async (req,res,next)=>{
+
+  const groupId=req.params.groupId;
+  const group= await Groups.findOne({where:{[Op.and]: [{userId:req.user.id}, {id:groupId}]}})
+  console.log("TTTTTTT "+group);
+
+  try{
+    if(group){
+      group.destroy();
+      res.status(200).json({success:true,message:'Group Deleted Successfully...!!'});
+    }else{
+      res.status(201).json({success:false,message:"You are not a Admin"});
+    }
+  }catch(err){
+    res.status(501).json({err:err});
+  }
+
+    // req.user.createGroup({
+    //       name:groupname
+    //   }
+    //   ).then(result=>{
+    //     res.status(200).json({result:result});
+    //   }).catch(err=>{
+    //     res.status(401).json({message:"Something went Wrong"});
+    //   })
+}

@@ -25,14 +25,18 @@ let k=0;
                     alert("Groups Created Successfully");
                     
 
-                   // table.innerHTML+=`<tr><td></td><td>${res.data.result.name}</td><td><a href=""#>Members</a></td><tr>`
                    var list = document.getElementById('list');
-                   list.innerHTML+=`<li><span class="span" ">${k+1}</span>
-                <span class="span" ></span><span class="span" ></span>
-                <span class="span" >${res.data.result.name}</span>
-                <span class="span" ></span><span class="span" ></span><span class="span" ></span>
-                <button class="addmembers" data-target="#membermodal" data-toggle="modal">Add Members</button></li>`;
+                   list.innerHTML+=`<li><span class="span" style="display:none">${res.data.result.id}</span><span class="span" ">${k+1}</span>
+                   <span class="span" ></span>
+                <span class="span" style="position:fixed; width: 100px;">${res.data.result.name}</span>
+                <span class="span" ></span><span class="span" ></span><span class="span" ></span> <span class="span" ></span><span class="span" ></span> <span class="span" ></span>
+                <button class="addmembers" data-target="#membermodal" data-toggle="modal">Add Members</button>&nbsp&nbsp
+                <button class="delete">Delete</button>
+                </li>`;
                 }
+
+                
+               
     
             }).catch(err=>{
                 
@@ -47,7 +51,92 @@ let k=0;
                 
                 
             })
-           
+            var list = document.getElementById('list1');
+            list.addEventListener('click', async (e) => {
+                var table = document.getElementById('mtable');
+                    const li = e.target.parentElement;
+                    var group_id = document.getElementById('group_id');
+                       group_id.value=li.children[0].innerText; 
+                       console.log("mmmm"+group_id.value)
+                       $('input[type=checkbox]').prop('checked',false);
+
+                       axios.get(`http://localhost:3000/user/getUsers?groupId=${group_id.value}`,{headers:{"Authorization":token}}).then(res=>{
+                        
+                        
+                        for(let i=0;i<res.data.result.length;i++){
+                        table.innerHTML+=`
+                        <tr>
+                        <td><input type="checkbox" class="member" id="member" name="members" value="`+res.data.result[i].id+`"/></td>
+                        <td>${res.data.result[i].name}</td>
+                        <tr>`
+                    }
+                   
+                })
+                
+                       //getUsers
+                    axios.get(`http://localhost:3000/user/getUsers?groupId=${group_id.value}`,{headers:{"Authorization":token}}).then(res=>{
+                        var memberBtn = document.getElementById('memberBtn');
+                        if(res.data.btn==true){
+                            memberBtn.removeAttribute("disabled");
+                            
+                        }else{
+                            memberBtn.setAttribute("disabled", "");
+                        }
+                        
+                        //getMembers
+                    for(let j=0;j<res.data.result.length;j++){
+                        
+                        
+                        axios.get(`http://localhost:3000/user/getMembers?groupId=${group_id.value}`,{headers:{"Authorization":token}}).then(res1=>{
+                        
+                        for(let k=0;k<res1.data.result.length;k++){
+                           
+                         if(res.data.result[j].id===res1.data.result[k].userId || res.data.result[j].id===res1.data.userId){
+        
+                            var id = document.querySelectorAll('.member'); 
+                            id[j].checked=true
+                            
+                         }
+                         
+                        
+                        }
+                     
+                     }).catch(err=>{
+                       console.log(err);
+                     })
+                    
+                        
+                }
+            })
+
+
+                //Delete group
+                try {
+                    if (e.target.classList.contains("delete")) {
+                        const token=localStorage.getItem('token');
+                        if (confirm("Are You Sure ?")) {
+                            const li = e.target.parentElement;
+                            const groupId = li.firstElementChild.innerText
+                            
+                            await axios.delete(`http://localhost:3000/deleteGroup/${groupId}`,{headers:{"Authorization":token}}).then(res=>{
+                                alert(res.data.message);
+                                if(res.data.success){
+                                    list.removeChild(li);
+                                }
+                                
+                            });
+                        }
+                    }
+            
+                } catch (err) {
+                    console.log(err)
+            
+                }
+                
+                
+                table.innerHTML="";     
+            
+            })
             
             groupname.value="";
            
@@ -67,10 +156,12 @@ let k=0;
                 var list = document.getElementById('list');
                 for(let i=0;i<res.data.result.length;i++){
                 list.innerHTML+=`<li><span class="span" style="display:none">${res.data.result[i].id}</span><span class="span" >${i+1}</span>
-                <span class="span" ></span><span class="span" ></span>
-                <span class="span" >${res.data.result[i].name}</span>
-                <span class="span" ></span><span class="span" ></span><span class="span" ></span>
-                <button class="addmembers" data-target="#membermodal" data-toggle="modal">Add Members</button></li>`;
+                <span class="span" ></span>
+                <span class="span" style="position:fixed; width: 100px;">${res.data.result[i].name}</span>
+                <span class="span" ></span><span class="span" ></span><span class="span" ></span><span class="span" ></span><span class="span" ></span><span class="span" ></span>
+                <button class="addmembers" data-target="#membermodal" data-toggle="modal">Add Members</button>&nbsp&nbsp
+                <button class="delete">Delete</button>
+                </li>`;
                 
                 //table.innerHTML+=`<tr><td>${i+1}</td><td>${res.data.result[i].name}</td><td><a data-toggle="modal data-target="#membermodal" onclick="getValue(i+1);">Members<td></td></a></td><tr>`
                 }
@@ -129,34 +220,42 @@ let k=0;
                     
                         
                 }
-                })
-                table.innerHTML="";     
+            })
+
+
+                //Delete group
+                try {
+                    if (e.target.classList.contains("delete")) {
+                        const token=localStorage.getItem('token');
+                        if (confirm("Are You Sure ?")) {
+                            const li = e.target.parentElement;
+                            const groupId = li.firstElementChild.innerText
+                            
+                            await axios.delete(`http://localhost:3000/deleteGroup/${groupId}`,{headers:{"Authorization":token}}).then(res=>{
+                                alert(res.data.message);
+                                if(res.data.success){
+                                    list.removeChild(li);
+                                }
+                                
+                            });
+                        }
+                    }
+            
+                } catch (err) {
+                    console.log(err)
+            
                 }
                 
-            )
+                
+                table.innerHTML="";     
             
             })
+            
+        })
          
-            
-        //     axios.get(`http://localhost:3000/user/getUsers`,{headers:{"Authorization":token}}).then(res=>{
-        //         var table = document.getElementById('mtable');
-                
-        //         for(let i=0;i<res.data.result.length;i++){
-        //         table.innerHTML+=`
-        //         <tr>
-        //         <td><input type="checkbox" class="member" id="member" name="members" value="`+res.data.result[i].id+`"/></td>
-        //         <td>${res.data.result[i].name}</td>
-        //         <tr>`
-                 
-                
-        //     }
-            
-        // })
 
-       
-           
-                 
 })
+
 var memberBtn = document.getElementById('memberBtn');
 memberBtn.addEventListener("click", async (e) => {
     
