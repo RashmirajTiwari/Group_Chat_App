@@ -153,6 +153,7 @@ let k=0;
                 var table = document.getElementById('gtable');
                 var membermodal = document.getElementById('membermodal')
                 k=res.data.result.length;
+                console.log(res)
                 var list = document.getElementById('list');
                 for(let i=0;i<res.data.result.length;i++){
                 list.innerHTML+=`<li><span class="span" style="display:none">${res.data.result[i].id}</span><span class="span" >${i+1}</span>

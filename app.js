@@ -5,9 +5,19 @@ const User=require('./Model/user');
 const ChatMessage=require('./Model/chatMessges');
 const Groups=require('./Model/groups');
 const app=express();
+const server=require('http').createServer(app);
 const cors = require('cors');
 
 
+const io=require('socket.io')(server);
+
+io.on("connection",socket=>{
+    console.log(socket.id)
+    socket.on("send-message",(message)=>{
+        socket.broadcast.emit("receive-message",message)
+        
+    })
+})
 
 
 
@@ -18,8 +28,12 @@ const membersRoutes=require('./Routes/members');
 const groupMessageRoutes=require('./Routes/groupmessage');
 
 
+server.prependListener("request", (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+ });
 
 app.use(cors());
+
 app.use(bodyParser.json());
 app.use(userRoutes);
 app.use(chatMessageRoutes);
@@ -36,6 +50,6 @@ Groups.belongsTo(User);
 
 sequelize.sync().then(result=>{
     //console.log(result);
-    app.listen(process.env.PORT);
+    server.listen(process.env.PORT);
 })
 .catch(err=>console.log(err));
